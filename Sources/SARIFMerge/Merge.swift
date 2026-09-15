@@ -455,19 +455,19 @@ extension SARIFLog: MergeableWithIdentity {
 }
 
 public struct SARIFLogMerger: ~Copyable {
-  private let output: SARIFLog
+  public let outputLog: SARIFLog
   private var mergeState = SARIFLog.MergeState()
   private let sink: any ValidationSink
   private var first = true
 
-  public init(into output: SARIFLog, sink: any ValidationSink) {
-    self.output = output
+  public init(into outputLog: SARIFLog, sink: any ValidationSink) {
+    self.outputLog = outputLog
     self.sink = sink
   }
 
-  public mutating func merge(from input: SARIFLog) throws {
+  public mutating func merge(from inputLog: SARIFLog) throws {
     var merger = PropertyMerger(
-      from: input, into: self.output, first: self.first, sink: self.sink)
+      from: inputLog, into: self.outputLog, first: self.first, sink: self.sink)
     try self.mergeState.merge(merger: &merger)
     self.first = false
   }
