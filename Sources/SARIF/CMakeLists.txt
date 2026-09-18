@@ -40,7 +40,7 @@ add_sarif_library(SARIF
 
 # Linked PUBLIC even though 'ImmutableJSON' is only reached through a
 # file-private import: a binary .swiftmodule records every module it imports.
-target_link_sarif_libraries(SARIF PUBLIC
+target_link_libraries(SARIF PUBLIC
   ImmutableJSON
   SARIFRecords)
 
