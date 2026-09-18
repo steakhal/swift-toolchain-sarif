@@ -10,23 +10,6 @@
 ##
 ##===----------------------------------------------------------------------===##
 
-function(target_link_sarif_libraries TARGET)
-  cmake_parse_arguments(ARGS "PUBLIC;PRIVATE;INTERFACE" "" "" ${ARGN})
-  set(link_type)
-  if(ARGS_PUBLIC)
-    set(link_type PUBLIC)
-  elseif(ARGS_PRIVATE)
-    set(link_type PRIVATE)
-  elseif(ARGS_INTERFACE)
-    set(link_type INTERFACE)
-  endif()
-
-  string(PREPEND TARGET ${SARIF_TARGET_NAMESPACE})
-  list(TRANSFORM ARGS_UNPARSED_ARGUMENTS PREPEND "${SARIF_TARGET_NAMESPACE}" OUTPUT_VARIABLE dependencies)
-
-  target_link_libraries(${TARGET} ${link_type} ${dependencies})
-endfunction()
-
 # Add a new host library with the given name.
 function(add_sarif_library name)
   set(ASL_SOURCES ${ARGN})

@@ -15,9 +15,7 @@ add_sarif_library(SARIFMerge
   PropertyMerger.swift
 )
 
-target_link_sarif_libraries(SARIFMerge PUBLIC
+target_link_libraries(${SARIF_TARGET_NAMESPACE}SARIFMerge PUBLIC
+  OrderedCollections
   SARIF
   SARIFRecords)
-
-target_link_libraries(${SARIF_TARGET_NAMESPACE}SARIFMerge PUBLIC
-  OrderedCollections)
