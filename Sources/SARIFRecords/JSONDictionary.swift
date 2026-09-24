@@ -46,6 +46,10 @@ public struct JSONDictionary<K: Hashable & Codable, V>: Sequence,
     self.dictionary = .init(uniqueKeysWithValues: elements)
   }
 
+  public init(uniqueKeysWithValues: some Sequence<(K, V)>) {
+    self.dictionary = .init(uniqueKeysWithValues: uniqueKeysWithValues)
+  }
+
   public init(from dictionary: OrderedDictionary<K, V>) {
     self.dictionary = dictionary
   }
@@ -91,6 +95,7 @@ public struct JSONDictionary<K: Hashable & Codable, V>: Sequence,
 
   public subscript(_ key: K, default defaultValue: @autoclosure () -> V) -> V {
     get { self.dictionary[key, default: defaultValue()] }
+    set { self.dictionary[key, default: defaultValue()] = newValue }
   }
 
   public func makeIterator() -> Iterator {
