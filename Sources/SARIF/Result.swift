@@ -123,6 +123,7 @@ public final class Result: JSONRepresentableWithContext<ResultRecord>,
   public var correlationGuid: UUID? = nil
   public var message: Message
   public var locations: [Location] = []
+  public var codeFlows: [CodeFlow] = []
   public var analysisTarget: ArtifactLocationReference? = nil
   public var fingerprints: Fingerprints = .empty
   public var partialFingerprints: Fingerprints = .empty
@@ -175,6 +176,11 @@ public final class Result: JSONRepresentableWithContext<ResultRecord>,
         from: $0, sink: sink, artifacts: artifacts,
         logicalLocations: logicalLocations)
     }
+    self.codeFlows = try (record.codeFlows ?? []).map {
+      try CodeFlow(
+        from: $0, sink: sink, artifacts: artifacts,
+        logicalLocations: logicalLocations)
+    }
     self.analysisTarget = try record.analysisTarget.map {
       try ArtifactLocationReference(from: $0, sink: sink, artifacts: artifacts)
     }
@@ -182,7 +188,7 @@ public final class Result: JSONRepresentableWithContext<ResultRecord>,
     self.partialFingerprints = record.partialFingerprints ?? .init()
     self.rank = record.rank  // TODO: Validation
 
-    // TODO: codeFlows, graphs, graphTraversals, stacks, relatedLocations, suppressions, baselineState, attachments, workItemUris, hostedViewerUri, provenance, fixes, occurrenceCount,
+    // TODO: graphs, graphTraversals, stacks, relatedLocations, suppressions, baselineState, attachments, workItemUris, hostedViewerUri, provenance, fixes, occurrenceCount,
 
     try $record.validateRuleId(\.ruleId)
     if let rule = record.rule {
@@ -259,7 +265,7 @@ public final class Result: JSONRepresentableWithContext<ResultRecord>,
       analysisTarget: try analysisTarget.toJSON(with: context.artifacts),
       webRequest: nil,  // FIXME
       webResponse: nil,  // FIXME
-      codeFlows: nil,  // FIXME
+      codeFlows: try codeFlows.ifNotEmpty?.toJSON(with: locationsContext),
       graphs: nil,  // FIXME
       graphTraversals: nil,  // FIXME
       stacks: nil,  // FIXME

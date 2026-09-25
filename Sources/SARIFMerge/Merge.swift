@@ -206,6 +206,11 @@ extension Result: MergeableWithIdentity {
         output.locations.append(location)
         return location
       }
+      // Keep the first result's code flows verbatim. Their inner locations
+      // still reference the input run's artifacts, so on save they serialize by
+      // URI rather than by index (ArtifactLocationReference.toJSON handles the
+      // fallback) -- valid, and the reasoning survives the merge.
+      try merger.keepFirst(keys: \.codeFlows)
       try merger.keepFirst(keys: \.message)
     }
   }
