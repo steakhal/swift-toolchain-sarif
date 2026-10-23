@@ -183,12 +183,22 @@ extension Result: MergeableWithIdentity {
   internal struct MergeKey: MergeKeyProtocol<Result> {
     private let rule: Rule
     private let locations: [Location.MergeKey]
+    // Distinct class-template specializations share one primary-template source
+    // location (e.g. every WTF::Vector<T> anchors at the `class Vector` token),
+    // so keying on (rule, locations) alone collapses them and keepFirst(\.message)
+    // silently drops every later specialization's distinct text. The message
+    // carries the fully-qualified subject type, so including it keeps
+    // type-distinct diagnostics apart while still deduping the identical
+    // diagnostic emitted for one type across many translation units (same token
+    // location, same message).
+    private let message: Message
 
     init(for result: Result, with context: Context) throws {
       self.rule = context.rules.resolve(from: result.rule)
       try self.locations = result.locations.map {
         try $0.mergeKey(with: context.artifacts)
       }
+      self.message = result.message
     }
   }
 
